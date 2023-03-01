@@ -17,6 +17,7 @@ import java.util.function.Predicate;
 public final class Utils {
 	
 	public static final String NUMBER_ARRAY_REGEX = "^\\s*[\\[\\{\\(]\\s*(((-|\\+)?\\s*\\d+(\\.\\d+)?\\s*,\\s*)*(-|\\+)?\\s*\\d+(\\.\\d+)?)?\\s*[\\]\\}\\)]\\s*$";
+	public static final String CLEAN_ARRAY_REGEX = "[\\(\\)\\[\\]\\{\\}\\+\\s]";
     
     private Utils() {}
 
@@ -260,7 +261,7 @@ public final class Utils {
         	throw new ArrayFormatException("\"" + input + "\" does not match pattern Utils.NUMBER_ARRAY_REGEX: " + NUMBER_ARRAY_REGEX);
         }
         Method parse = getParseMethod(componentType);
-        String[] stringArray = input.replaceAll("[\\(\\)\\[\\]\\{\\}\\+\\s]", "").split(",");
+        String[] stringArray = input.replaceAll(CLEAN_ARRAY_REGEX, "").split(",");
         if(stringArray.length == 1 && stringArray[0].isEmpty()) {
             return Array.newInstance(componentType, 0);
         }
