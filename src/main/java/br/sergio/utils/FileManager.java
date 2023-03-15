@@ -98,6 +98,17 @@ public final class FileManager {
 	}
 	
 	public static void copyDirectory(Path source, Path target, boolean replaceIfExists) throws IOException {
+		if(!Files.isDirectory(source) || !Files.isDirectory(target)) {
+			throw new IOException("source or target is not a directory");
+		}
+		if(Files.exists(target)) {
+			if(replaceIfExists) {
+				delete(target);
+				createDirectory(target);
+			} else {
+				return;
+			}
+		}
 	    Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
 
 			@Override
