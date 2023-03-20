@@ -306,16 +306,14 @@ public final class Utils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T[] toArray(Collection<T> collection) {
+    public static <T> T[] toArray(Collection<T> collection, Class<T> clazz) {
         if(collection == null) {
             return null;
         }
-        T[] array = (T[]) new Object[collection.size()];
-        int i = 0;
-        for(T obj : collection) {
-            array[i++] = obj;
+        if(clazz == null) {
+            throw new NullPointerException("clazz = null");
         }
-        return array;
+        return collection.toArray((T[]) Array.newInstance(clazz, collection.size()));
     }
     
     public static Object parseNumberArray(String input, Class<?> componentType) {
