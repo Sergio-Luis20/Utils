@@ -52,6 +52,7 @@ public class Backup<T> implements Serializable {
     public void setTarget(T target) {
         if(this.target != target) {
             fields.clear();
+            return;
         }
         this.target = Objects.requireNonNull(target);
     }

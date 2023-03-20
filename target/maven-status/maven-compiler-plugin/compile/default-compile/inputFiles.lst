@@ -1,12 +1,13 @@
 D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\math\MathUtils.java
-D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\ConditionException.java
-D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\math\MathException.java
+D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\Pair.java
 D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\ArrayFormatException.java
 D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\math\Matrix.java
 D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\Utils.java
-D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\FileManager.java
 D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\math\Point.java
 D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\math\Vector.java
+D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\ConditionException.java
+D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\math\MathException.java
+D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\FileManager.java
 D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\Backup.java
 D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\math\Rational.java
 D:\eclipse-workspace\utils\src\main\java\br\sergio\utils\math\Complex.java
