@@ -36,6 +36,10 @@ public class Backup<T> implements Serializable {
         try {
             Field[] array = target.getClass().getDeclaredFields();
             for(Field field : array) {
+                int mod = field.getModifiers();
+                if(Modifier.isFinal(mod)) {
+                    continue;
+                }
                 field.setAccessible(true);
                 field.set(Modifier.isStatic(field.getModifiers()) ? null : target, 
                     fields.get(field.getName()));
