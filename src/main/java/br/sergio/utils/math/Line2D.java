@@ -118,7 +118,7 @@ public class Line2D implements Serializable {
         } else if(isVertical()) {
             return (int) point.getX();
         } else {
-            return (int) (point.getY() / point.getX());
+            return (int) (vector.getY() / vector.getX());
         }
     }
 
