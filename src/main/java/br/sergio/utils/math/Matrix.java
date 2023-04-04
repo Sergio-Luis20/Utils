@@ -81,7 +81,7 @@ public class Matrix implements Serializable {
 		return columnMatrix(columnArray);
 	}
 	
-	public static Matrix lineMatrix(double[] array) {
+	public static Matrix lineMatrix(double... array) {
 		if(array.length == 0) {
 			throw new MathException("minimum line size: 1");
 		}
@@ -97,7 +97,7 @@ public class Matrix implements Serializable {
 		return lineMatrix(new double[size]);
 	}
 	
-	public static Matrix columnMatrix(double[] array) {
+	public static Matrix columnMatrix(double... array) {
 		if(array.length == 0) {
 			throw new MathException("minimum column size: 1");
 		}

@@ -3,6 +3,7 @@ br\sergio\utils\FileManager$1.class
 br\sergio\utils\Pair.class
 br\sergio\utils\FileManager$2.class
 br\sergio\utils\math\Point.class
+br\sergio\utils\math\Line2DSegment.class
 br\sergio\utils\math\MathException.class
 br\sergio\utils\ArrayFormatException.class
 br\sergio\utils\ConditionException.class

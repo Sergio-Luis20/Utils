@@ -95,6 +95,10 @@ public class Vector implements Serializable {
 			return v.multiplyByScalar(dotProduct(v) / v.dotProduct(v));
 		}
 	}
+
+	public boolean isOrthogonal(Vector v) {
+		return dotProduct(v) == 0;
+	}
 	
 	public boolean isMultipleOf(Vector v) {
 		return crossProduct(v).equals(NULL);

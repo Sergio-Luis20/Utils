@@ -55,11 +55,27 @@ public class Line2D implements Serializable {
         return Math.abs(a * p.getX() + b * p.getY() + c) / Math.hypot(a, b);
     }
 
-    public double distance(Line2D line) {
-        if(a != line.a || b != line.b) {
-            return 0;
+    public boolean isParallel(Line2D line) {
+        return vector.isMultipleOf(line.vector);
+    }
+
+    public boolean isOrthogonal(Line2D line) {
+        return vector.isOrthogonal(line.vector);
+    }
+
+    public Point getIntersection(Line2D line) {
+        Matrix matrix = new Matrix(new double[][] {{a, b}, {line.a, line.b}});
+        double d = matrix.determinant();
+        if(d == 0) {
+            return null;
         }
-        if(c == line.c) {
+        double dx = new Matrix(new double[][] {{c, b}, {line.c, line.b}}).determinant();
+        double dy = new Matrix(new double[][] {{a, c}, {line.a, line.c}}).determinant();
+        return new Point(dx / d, dy / d);
+    }
+
+    public double distance(Line2D line) {
+        if(!isParallel(line)) {
             return 0;
         }
         return distance(line.getPoint());
@@ -106,7 +122,7 @@ public class Line2D implements Serializable {
             return true;
         }
         if(o instanceof Line2D line) {
-            return contains(line.point) && vector.isMultipleOf(line.vector);
+            return isParallel(line) && contains(line.point);
         }
         return false;
     }
