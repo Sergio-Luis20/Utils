@@ -14,9 +14,8 @@ public final class Complex extends Number implements Comparable<Complex> {
 	public Complex(double real, double imaginary) {
 		this.real = real;
 		this.imaginary = imaginary;
-		Vector vector = new Vector(real, imaginary);
-		modulus = vector.getMagnitude();
-		argument = new Vector(1, 0).angle(vector) * (imaginary >= 0 ? 1 : -1);
+		modulus = Math.hypot(real, imaginary);
+		argument = isZero() ? Math.PI / 2 : Math.atan2(real, imaginary);
 	}
 	
 	public Complex(double real) {
@@ -60,9 +59,9 @@ public final class Complex extends Number implements Comparable<Complex> {
 			return new Complex(0);
 		}
 		double theta = exp.real * argument + exp.imaginary * MathUtils.ln(modulus);
-		double factor = MathUtils.pow(modulus, exp.real) * MathUtils.pow(Math.E, -exp.imaginary * argument);
-		double real = MathUtils.cos(theta) * factor;
-		double imaginary = MathUtils.sin(theta) * factor;
+		double factor = Math.pow(modulus, exp.real) * Math.pow(Math.E, -exp.imaginary * argument);
+		double real = Math.cos(theta) * factor;
+		double imaginary = Math.sin(theta) * factor;
 		return new Complex(real, imaginary);
 	}
 	
@@ -102,7 +101,7 @@ public final class Complex extends Number implements Comparable<Complex> {
 	@Override
 	public String toString() {
 		String value;
-		if(real == 0 && imaginary == 0) {
+		if(isZero()) {
 			value = "0";
 		} else {
 			String realPart, imaginaryPart;
@@ -116,17 +115,19 @@ public final class Complex extends Number implements Comparable<Complex> {
 			} else {
 				imaginaryPart = imaginary == 0 ? "" : imaginary + "i";
 			}
-			if(real != 0 && imaginary > 0) {
-				if(imaginary == 1) {
-					value = realPart + "+i";
+			if(imaginary > 0) {
+				if(real != 0) {
+					if(imaginary == 1) {
+						value = realPart + "+i";
+					} else {
+						value = realPart + "+" + imaginaryPart;
+					}
 				} else {
-					value = realPart + "+" + imaginaryPart;
-				}
-			} else if(real == 0 && imaginary > 0) {
-				if(imaginary == 1) {
-					value = "i";
-				} else {
-					value = imaginaryPart;
+					if(imaginary == 1) {
+						value = "i";
+					} else {
+						value = imaginaryPart;
+					}
 				}
 			} else {
 				if(imaginary == -1) {
@@ -147,12 +148,17 @@ public final class Complex extends Number implements Comparable<Complex> {
 	public boolean isReal() {
 		return imaginary == 0;
 	}
+
+	public boolean isZero() {
+		return real == 0 && imaginary == 0;
+	}
 	
 	public static Complex valueOf(String value) {
-		String realRegex = "(([-]\\d+|\\d+)|([-]\\d+[.]\\d+|\\d+[.]\\d+))";
+		value = value.replace(" ", "");
+		String realRegex = "(([+-]\\d+|\\d+)|([+-]\\d+[.]\\d+|\\d+[.]\\d+))";
 		String imaginaryRegex = realRegex + "[i]";
 		String complexRegex = realRegex + "([+-]\\d+|[+-]\\d+[.]\\d+)[i]";
-		String iRegex = "([-][i]|[i])";
+		String iRegex = "[+-]?[i]";
 		if(value.matches(realRegex)) {
 			return new Complex(Double.parseDouble(value));
 		} else if(value.matches(imaginaryRegex)) {
@@ -160,7 +166,10 @@ public final class Complex extends Number implements Comparable<Complex> {
 		} else if(value.matches(complexRegex)) {
 			int index = -1;
 			if(value.contains("+")) {
-				index = value.indexOf('+');
+				index = value.lastIndexOf('+');
+				if(index == 0) {
+					index = -1;
+				}
 			}
 			if(index == -1) {
 				index = value.lastIndexOf('-');
