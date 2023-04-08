@@ -15,7 +15,7 @@ public final class Complex extends Number implements Comparable<Complex> {
 		this.real = real;
 		this.imaginary = imaginary;
 		modulus = Math.hypot(real, imaginary);
-		argument = isZero() ? Math.PI / 2 : Math.atan2(real, imaginary);
+		argument = isZero() ? Math.PI / 2 : Math.atan2(imaginary, real);
 	}
 	
 	public Complex(double real) {
@@ -39,44 +39,49 @@ public final class Complex extends Number implements Comparable<Complex> {
 	public Complex divide(Complex c) {
 		double denom = MathUtils.pow(c.real, 2) + MathUtils.pow(c.imaginary, 2);
 		if(denom == 0) {
-			throw new MathException("O complexo divisor não pode ser 0.");
+			throw new MathException("denominator = 0");
 		}
 		double r = (real * c.real + imaginary * c.imaginary) / denom;
 		double i = (imaginary * c.real - real * c.imaginary) / denom;
 		return new Complex(r, i);
 	}
-	
-	public Complex sqrt() {
-		return pow(new Complex(0.5));
+
+	public static Complex sqrt(Complex c) {
+		return pow(c, new Complex(0.5));
 	}
-	
-	public Complex cbrt() {
-		return isReal() && real < 0 ? new Complex(MathUtils.cbrt(real)) : pow(new Complex(1.0 / 3.0));
+
+	public static Complex cbrt(Complex c) {
+		return c.isReal() ? new Complex(Math.cbrt(c.real)) : pow(c, new Complex(1.0 / 3.0));
 	}
-	
-	public Complex pow(Complex exp) {
-		if(modulus == 0) {
-			return new Complex(0);
+
+	public static Complex pow(Complex base, Complex exp) {
+		if(base.isZero()) {
+			if(exp.isZero()) {
+				throw new MathException("0^0");
+			} else {
+				return new Complex(0);
+			}
 		}
-		double theta = exp.real * argument + exp.imaginary * MathUtils.ln(modulus);
-		double factor = Math.pow(modulus, exp.real) * Math.pow(Math.E, -exp.imaginary * argument);
+		if(exp.isZero()) {
+			return new Complex(1);
+		}
+		double theta = exp.real * base.argument + exp.imaginary * MathUtils.ln(base.modulus);
+		double factor = Math.pow(base.modulus, exp.real) * Math.pow(Math.E, -exp.imaginary * base.argument);
 		double real = Math.cos(theta) * factor;
 		double imaginary = Math.sin(theta) * factor;
 		return new Complex(real, imaginary);
 	}
-	
-	public Complex log(Complex base) {
-		Complex a = ln();
-		Complex b = base.ln();
-		return a.divide(b);
+
+	public static Complex log(Complex base, Complex logarithming) {
+		return ln(logarithming).divide(ln(base));
 	}
-	
-	public Complex log10() {
-		return log(new Complex(10));
+
+	public static Complex log10(Complex logarithming) {
+		return log(new Complex(10), logarithming);
 	}
-	
-	public Complex ln() {
-		return new Complex(MathUtils.ln(modulus), argument);
+
+	public static Complex ln(Complex logarithming) {
+		return new Complex(MathUtils.ln(logarithming.modulus), logarithming.argument);
 	}
 	
 	@Override
