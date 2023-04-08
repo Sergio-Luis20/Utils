@@ -98,7 +98,7 @@ public final class FileManager {
 	}
 	
 	public static void copyDirectory(Path source, Path target, boolean replaceIfExists) throws IOException {
-		if(!Files.isDirectory(source) || !Files.isDirectory(target)) {
+		if(Files.exists(source) && !Files.isDirectory(source) || Files.exists(target) && !Files.isDirectory(target)) {
 			throw new IOException("source or target is not a directory");
 		}
 		if(Files.exists(target)) {
@@ -130,7 +130,7 @@ public final class FileManager {
 	
 	public static void copyFile(Path source, Path target, boolean replaceIfExists) throws IOException {
 		if(!Files.exists(target) || replaceIfExists) {
-			Files.copy(source, target, StandardCopyOption.values());
+			Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 		}
 	}
 	
