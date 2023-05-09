@@ -14,12 +14,12 @@ public class Vector implements Serializable {
 		this(Point.ORIGIN, Point.ORIGIN);
 	}
 	
-	public Vector(double i, double j) {
-		this(i, j, 0);
+	public Vector(double x, double y) {
+		this(x, y, 0);
 	}
 	
-	public Vector(double i, double j, double k) {
-		this(Point.ORIGIN, new Point(i, j, k));
+	public Vector(double x, double y, double z) {
+		this(Point.ORIGIN, new Point(x, y, z));
 	}
 	
 	public Vector(Point p) {
@@ -132,6 +132,10 @@ public class Vector implements Serializable {
 	
 	public static double mixedProduct(Vector u, Vector v, Vector w) {
 		return u.dotProduct(v.crossProduct(w));
+	}
+	
+	public Point toPoint() {
+		return new Point(x, y, z);
 	}
 	
 	public Point getOrigin() {
