@@ -84,6 +84,26 @@ public class Line2D implements Serializable {
     public Point getPoint(double t) {
         return new Point(getX(t), getY(t));
     }
+    
+    public double y(double x) {
+    	if(isVertical()) {
+    		return Double.NaN;
+    	} else if(isHorizontal()) {
+    		return point.getY();
+    	} else {
+    		return -(a * x + c) / b;
+    	}
+    }
+    
+    public double x(double y) {
+    	if(isHorizontal()) {
+    		return Double.NaN;
+    	} else if(isVertical()) {
+    		return point.getX();
+    	} else {
+    		return -(b * y + c) / a;
+    	}
+    }
 
     public double getX(double t) {
         return point.getX() + t * vector.getX();
