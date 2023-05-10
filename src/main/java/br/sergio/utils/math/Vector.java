@@ -6,9 +6,9 @@ import java.util.Objects;
 public class Vector implements Serializable {
 	
 	public static final Vector NULL = new Vector();
-	private double magnitude;
-	private double x, y, z;
-	private Point origin, end;
+	protected double magnitude;
+	protected double x, y, z;
+	protected Point origin, end;
 	
 	public Vector() {
 		this(Point.ORIGIN, Point.ORIGIN);

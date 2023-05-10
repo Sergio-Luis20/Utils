@@ -17,3 +17,4 @@ br\sergio\utils\FileManager.class
 br\sergio\utils\Backup.class
 br\sergio\utils\FileManager$3.class
 br\sergio\utils\math\Complex.class
+br\sergio\utils\math\MutableVector.class
