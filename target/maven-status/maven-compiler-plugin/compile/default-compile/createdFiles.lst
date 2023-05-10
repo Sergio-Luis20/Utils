@@ -12,6 +12,7 @@ br\sergio\utils\math\Vector.class
 br\sergio\utils\math\Line2D.class
 br\sergio\utils\math\Matrix.class
 br\sergio\utils\math\MathUtils.class
+br\sergio\utils\math\Polynomial.class
 br\sergio\utils\FileManager.class
 br\sergio\utils\Backup.class
 br\sergio\utils\FileManager$3.class

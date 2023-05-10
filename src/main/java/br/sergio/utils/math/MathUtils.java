@@ -50,6 +50,28 @@ public final class MathUtils {
 		return Math.pow(base, exponent);
 	}
 	
+	public static double pow(double base, int exponent) {
+		if(base == 1) {
+			return 1;
+		}
+		if(base == 0) {
+			if(exponent <= 0) {
+				throw new IllegalArgumentException("for base 0, exponent must be greater than 0");
+			}
+			return 0;
+		}
+		int exp = abs(exponent);
+		double result = 1;
+		for(int i = 0; i < exp; i++) {
+			result *= base;
+		}
+		// Check for when 0 < base < 1 and absolute exponent is too big
+		if(result == 0) {
+			return Double.POSITIVE_INFINITY;
+		}
+		return exponent < 0 ? 1 / result : result;
+	}
+	
 	public static double pow(double base, Rational exponent) {
 		if(base == 0 && exponent.getNum() <= 0) {
 			throw new MathException("base = 0 and exponent <= 0");
