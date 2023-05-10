@@ -62,6 +62,26 @@ public class Line2D implements Serializable {
     public boolean isOrthogonal(Line2D line) {
         return vector.isOrthogonal(line.vector);
     }
+    
+    public double getSlopeX() {
+    	if(isVertical()) {
+    		return Double.POSITIVE_INFINITY;
+    	} else if(isHorizontal()) {
+    		return 0;
+    	} else {
+    		return -a / b;
+    	}
+    }
+    
+    public double getSlopeY() {
+    	if(isHorizontal()) {
+    		return Double.POSITIVE_INFINITY;
+    	} else if(isVertical()) {
+    		return 0;
+    	} else {
+    		return -b / a;
+    	}
+    }
 
     public Point getIntersection(Line2D line) {
         Matrix matrix = new Matrix(new double[][] {{a, b}, {line.a, line.b}});
@@ -91,7 +111,12 @@ public class Line2D implements Serializable {
     	} else if(isHorizontal()) {
     		return point.getY();
     	} else {
-    		return -(a * x + c) / b;
+    		// Avoid negative zero
+    		double r = a * x + c;
+    		if(r == 0) {
+    			return 0;
+    		}
+    		return -r / b;
     	}
     }
     
@@ -101,7 +126,12 @@ public class Line2D implements Serializable {
     	} else if(isVertical()) {
     		return point.getX();
     	} else {
-    		return -(b * y + c) / a;
+    		// Avoid negative zero
+    		double r = b * y + c;
+    		if(r == 0) {
+    			return 0;
+    		}
+    		return -r / a;
     	}
     }
 
