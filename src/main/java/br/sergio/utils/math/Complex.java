@@ -2,7 +2,7 @@ package br.sergio.utils.math;
 
 import java.util.Objects;
 
-public final class Complex extends Number implements Comparable<Complex> {
+public final class Complex extends Number implements Cloneable, Comparable<Complex> {
 	
 	public static transient final Complex I = new Complex(0, 1);
 	
@@ -20,6 +20,10 @@ public final class Complex extends Number implements Comparable<Complex> {
 	
 	public Complex(double real) {
 		this(real, 0);
+	}
+	
+	public Complex(Complex copy) {
+		this(copy.real, copy.imaginary);
 	}
 	
 	public Complex add(Complex c) {
@@ -82,6 +86,11 @@ public final class Complex extends Number implements Comparable<Complex> {
 
 	public static Complex ln(Complex logarithming) {
 		return new Complex(MathUtils.ln(logarithming.modulus), logarithming.argument);
+	}
+	
+	@Override
+	public Complex clone() {
+		return new Complex(real, imaginary);
 	}
 	
 	@Override

@@ -14,6 +14,10 @@ public class MutableVector extends Vector {
 		super(x, y, z);
 	}
 	
+	public MutableVector(Vector copy) {
+		super(copy);
+	}
+	
 	public MutableVector(Point p) {
 		super(p);
 	}

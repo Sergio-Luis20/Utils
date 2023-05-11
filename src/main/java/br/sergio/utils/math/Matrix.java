@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.function.Function;
 
-public class Matrix implements Serializable {
+public class Matrix implements Serializable, Cloneable {
 	
 	private final int lines;
 	private final int columns;
@@ -44,11 +44,24 @@ public class Matrix implements Serializable {
 		}
 		this.lines = lines;
 		this.columns = columns;
-		this.data = Arrays.copyOf(data, data.length);
+		this.data = cloneData(data);
 	}
 	
 	public double[][] getCopyOfData() {
-		return Arrays.copyOf(data, data.length);
+		return cloneData(data);
+	}
+	
+	private double[][] cloneData(double[][] data) {
+		double[][] copy = new double[data.length][];
+		for(int i = 0; i < data.length; i++) {
+			copy[i] = data[i].clone();
+		}
+		return copy;
+	}
+	
+	@Override
+	public Matrix clone() {
+		return new Matrix(data);
 	}
 	
 	public int getLineAmount() {

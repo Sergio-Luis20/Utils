@@ -3,7 +3,7 @@ package br.sergio.utils.math;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Point implements Serializable {
+public class Point implements Serializable, Cloneable {
 	
 	public static final Point ORIGIN;
 	private double x, y, z;
@@ -18,8 +18,8 @@ public class Point implements Serializable {
 		this.z = z;
 	}
 	
-	public Point(Point p) {
-		this(p.x, p.y, p.z);
+	public Point(Point copy) {
+		this(copy.x, copy.y, copy.z);
 	}
 	
 	public Point add(Point p) {
@@ -39,7 +39,7 @@ public class Point implements Serializable {
 	}
 	
 	public Vector toVector() {
-		return new Vector(this);
+		return new Vector(x, y, z);
 	}
 	
 	public double distance(Point p) {
@@ -68,6 +68,11 @@ public class Point implements Serializable {
 			z[i] = array[i].z;
 		}
 		return z;
+	}
+	
+	@Override
+	public Point clone() {
+		return new Point(x, y, z);
 	}
 	
 	@Override

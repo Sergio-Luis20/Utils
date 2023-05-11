@@ -3,7 +3,7 @@ package br.sergio.utils.math;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Vector implements Serializable {
+public class Vector implements Serializable, Cloneable {
 	
 	public static final Vector NULL = new Vector();
 	protected double magnitude;
@@ -22,13 +22,17 @@ public class Vector implements Serializable {
 		this(Point.ORIGIN, new Point(x, y, z));
 	}
 	
+	public Vector(Vector copy) {
+		this(copy.toPoint());
+	}
+	
 	public Vector(Point p) {
 		this(Point.ORIGIN, p);
 	}
 	
 	public Vector(Point origin, Point end) {
-		this.origin = new Point(origin);
-		this.end = new Point(end);
+		this.origin = origin.clone();
+		this.end = end.clone();
 		Point difference = end.subtract(origin);
 		x = difference.getX();
 		y = difference.getY();
@@ -172,6 +176,11 @@ public class Vector implements Serializable {
 	
 	public Vector getK() {
 		return new Vector(0, 0, z);
+	}
+	
+	@Override
+	public Vector clone() {
+		return new Vector(origin, end);
 	}
 	
 	@Override

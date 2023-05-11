@@ -2,7 +2,7 @@ package br.sergio.utils.math;
 
 import java.util.Objects;
 
-public final class Rational extends Number implements Comparable<Rational> {
+public final class Rational extends Number implements Cloneable, Comparable<Rational> {
 	
 	private final int num, denom;
 	
@@ -63,6 +63,11 @@ public final class Rational extends Number implements Comparable<Rational> {
 			denominators[i] = array[i].denom;
 		}
 		return denominators;
+	}
+	
+	@Override
+	public Rational clone() {
+		return new Rational(num, denom);
 	}
 	
 	@Override

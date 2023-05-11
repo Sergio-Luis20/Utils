@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Polynomial implements Serializable {
+public class Polynomial implements Serializable, Cloneable {
 	
 	protected final double[] coefficients;
 	
@@ -18,7 +18,7 @@ public class Polynomial implements Serializable {
 		if(coefficients[0] == 0 && coefficients.length != 1) {
 			throw new IllegalArgumentException("first coefficient is zero for length greater than 1");
 		}
-		this.coefficients = coefficients;
+		this.coefficients = coefficients.clone();
 	}
 	
 	public double[] getCoefficients() {
@@ -53,6 +53,11 @@ public class Polynomial implements Serializable {
 		for(int i = 0; i < coefficients.length; i++) {
 			coefficients[i] = (coefficients.length - i) * this.coefficients[i];
 		}
+		return new Polynomial(coefficients);
+	}
+	
+	@Override
+	public Polynomial clone() {
 		return new Polynomial(coefficients);
 	}
 	

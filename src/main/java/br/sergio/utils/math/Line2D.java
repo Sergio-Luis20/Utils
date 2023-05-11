@@ -2,7 +2,7 @@ package br.sergio.utils.math;
 
 import java.io.Serializable;
 
-public class Line2D implements Serializable {
+public class Line2D implements Serializable, Cloneable {
     
     private double a, b, c;
 
@@ -28,8 +28,8 @@ public class Line2D implements Serializable {
         if(vector.getX() == 0 && vector.getY() == 0) {
             throw new IllegalArgumentException("NULL vector");
         }
-        this.point = point;
-        this.vector = vector.versor();
+        this.point = point.clone();
+        this.vector = vector.clone().versor();
         setABC(point, getPoint(1));
     }
 
@@ -161,6 +161,11 @@ public class Line2D implements Serializable {
 
     public Vector getVector() {
         return vector;
+    }
+    
+    @Override
+    public Line2D clone() {
+    	return new Line2D(point, vector);
     }
 
     @Override
