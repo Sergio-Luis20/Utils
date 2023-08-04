@@ -67,7 +67,11 @@ public final class MathUtils {
 		}
 		// Check for when 0 < base < 1 and absolute exponent is too big
 		if(result == 0) {
-			return Double.POSITIVE_INFINITY;
+			if(base < 0) {
+				return even(exponent) ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+			} else {
+				return Double.POSITIVE_INFINITY;
+			}
 		}
 		return exponent < 0 ? 1 / result : result;
 	}
@@ -265,7 +269,21 @@ public final class MathUtils {
 	}
 	
 	public static double round(double x, int precision) {
-	    return BigDecimal.valueOf(x).setScale(precision, x < 0 ? RoundingMode.HALF_DOWN : RoundingMode.HALF_UP).doubleValue();
+	    return BigDecimal.valueOf(x).setScale(precision, RoundingMode.HALF_UP).doubleValue();
+	}
+
+	public static String formatInteger(double value) {
+		if(isInteger(value)) {
+			String plainString = BigDecimal.valueOf(value).toPlainString();
+			int index = plainString.lastIndexOf('.');
+			if(index > 0) {
+				return plainString.substring(0, index);
+			} else {
+				return plainString;
+			}
+		} else {
+			return String.valueOf(value);
+		}
 	}
 	
 	public static long decimalPart(double value) {

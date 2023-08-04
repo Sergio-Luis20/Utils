@@ -3,7 +3,7 @@ package br.sergio.utils;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Pair<M, F> implements Serializable {
+public class Pair<M, F> implements Serializable, Cloneable {
     
     protected M male;
     protected F female;
@@ -34,6 +34,11 @@ public class Pair<M, F> implements Serializable {
     }
 
     @Override
+    public Pair<M, F> clone() {
+        return new Pair<>(male, female);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if(o == null) {
             return false;
@@ -42,9 +47,7 @@ public class Pair<M, F> implements Serializable {
             return true;
         }
         if(o instanceof Pair<?, ?> pair) {
-            boolean maleEquals = male == null ? pair.male == null : male.equals(pair.male);
-            boolean femaleEquals = female == null ? pair.female == null : female.equals(pair.female);
-            return maleEquals && femaleEquals;
+            return Objects.deepEquals(male, pair.male) && Objects.deepEquals(female, pair.female);
         }
         return false;
     }

@@ -37,7 +37,7 @@ public class Vector implements Serializable, Cloneable {
 		x = difference.getX();
 		y = difference.getY();
 		z = difference.getZ();
-		magnitude = MathUtils.sqrt(MathUtils.pow(x, 2) + MathUtils.pow(y, 2) + MathUtils.pow(z, 2));
+		magnitude = Math.sqrt(x * x + y * y + z * z);
 	}
 	
 	public static Vector trigonometric(double magnitude, double angle) {
