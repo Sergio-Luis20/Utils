@@ -51,11 +51,6 @@ public class MutableVector extends Vector {
 	}
 	
 	@Override
-	public double dotProduct(Vector v) {
-		return x * v.x + y * v.y + z * v.z;
-	}
-	
-	@Override
 	public Vector crossProduct(Vector v) {
 		double i = y * v.z - v.y * z;
 		double j = v.x * z - x * v.z;

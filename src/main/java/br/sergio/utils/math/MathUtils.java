@@ -80,7 +80,7 @@ public final class MathUtils {
 		if(base == 0 && exponent.getNum() <= 0) {
 			throw new MathException("base = 0 and exponent <= 0");
 		}
-		double n = Math.pow(base, exponent.getNum());
+		double n = pow(base, exponent.getNum());
 		int denom = exponent.getDenom();
 		if(n < 0) {
 			if(odd(denom)) {
@@ -310,9 +310,6 @@ public final class MathUtils {
 	}
 	
 	public static double arithmeticAverage(double... values) {
-		if(values.length == 0) {
-			return Double.NaN;
-		}
 		double x = 0;
 		for(double value : values) {
 			x += value;
@@ -321,9 +318,6 @@ public final class MathUtils {
 	}
 	
 	public static double weightedAverage(double[] weights, double[] values) {
-		if(weights.length == 0 || values.length == 0) {
-			return Double.NaN;
-		}
 		double denom = 0;
 		for(int i = 0; i < weights.length; i++) {
 			if(weights[i] <= 0 || values[i] < 0) {
@@ -339,9 +333,6 @@ public final class MathUtils {
 	}
 	
 	public static double geometricAverage(double... values) {
-		if(values.length == 0) {
-			return Double.NaN;
-		}
 		double x = 1;
 		for(double value : values) {
 			x *= value;
@@ -353,9 +344,6 @@ public final class MathUtils {
 	}
 	
 	public static double harmonicAverage(double... values) {
-		if(values.length == 0) {
-			return Double.NaN;
-		}
 		double num = values.length;
 		double denom = 0;
 		for (double doubleValue : values) {
@@ -365,6 +353,20 @@ public final class MathUtils {
 			denom += 1 / doubleValue;
 		}
 		return num / denom;
+	}
+
+	public static double variance(double... values) {
+		double average = arithmeticAverage(values);
+		int len = values.length;
+		double sum = 0;
+		for(double val : values) {
+			sum += pow(val - average, 2);
+		}
+		return sum / len;
+	}
+
+	public static double standardDeviation(double... values) {
+		return sqrt(variance(values));
 	}
 	
 	public static boolean even(long value) {
@@ -390,7 +392,7 @@ public final class MathUtils {
         Map<Integer, Integer> primeFactors = new HashMap<>();
         for(int number : values) {
             Map<Integer, Integer> factors = primeFactors(number);
-            for(Map.Entry<Integer, Integer> entry : factors.entrySet()) {
+            for(Entry<Integer, Integer> entry : factors.entrySet()) {
                 int prime = entry.getKey();
                 int count = entry.getValue();
                 if(!primeFactors.containsKey(prime) || primeFactors.get(prime) < count) {
@@ -402,7 +404,7 @@ public final class MathUtils {
         for(Entry<Integer, Integer> entry : primeFactors.entrySet()) {
             int factor = entry.getKey();
             int count = entry.getValue();
-            lcm *= Math.pow(factor, count);
+            lcm *= pow(factor, count);
         }
         return lcm;
     }
@@ -411,7 +413,7 @@ public final class MathUtils {
     	List<Integer> list = new ArrayList<>();
     	for(int i : values) {
     		if(i != 0) {
-    			list.add(MathUtils.abs(i));
+    			list.add(abs(i));
     		}
     	}
     	int size = list.size();
@@ -495,6 +497,7 @@ public final class MathUtils {
 	
 	public static Map<Integer, Integer> primeFactors(int n) {
 		n = abs(n);
+		// Key: prime; value: number of occurrences
 		Map<Integer, Integer> factors = new HashMap<>();
 	    int d = 2;
 	    while(n > 1) {
