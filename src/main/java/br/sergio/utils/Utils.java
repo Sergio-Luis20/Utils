@@ -15,6 +15,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class Utils {
@@ -496,7 +497,7 @@ public final class Utils {
     
     public static List<Field> getNonStaticFields(Class<?> clazz, boolean accessiblesOnly) {
     	return Stream.of(accessiblesOnly ? clazz.getFields() : clazz.getDeclaredFields())
-    			.filter(field -> !Modifier.isStatic(field.getModifiers())).toList();
+    			.filter(field -> !Modifier.isStatic(field.getModifiers())).collect(Collectors.toList());
     }
     
     public static List<Field> getAllFields(Class<?> clazz) {
@@ -547,7 +548,7 @@ public final class Utils {
     
     public static List<Method> getNonStaticMethods(Class<?> clazz, boolean accessiblesOnly) {
     	return Stream.of(accessiblesOnly ? clazz.getMethods() : clazz.getDeclaredMethods())
-				.filter(method -> !Modifier.isStatic(method.getModifiers())).toList();
+				.filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
     }
     
     public static List<Method> getAllMethods(Class<?> clazz) {
@@ -559,7 +560,7 @@ public final class Utils {
     	List<List<Method>> methods = new ArrayList<>();
 		while(clazz != Object.class) {
 			methods.add(Stream.of(accessiblesOnly ? clazz.getMethods() : clazz.getDeclaredMethods())
-					.filter(method -> !Modifier.isStatic(method.getModifiers())).toList());
+					.filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList()));
 			clazz = clazz.getSuperclass();
 		}
 		/*
