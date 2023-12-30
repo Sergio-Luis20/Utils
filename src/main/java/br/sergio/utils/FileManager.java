@@ -1,5 +1,8 @@
 package br.sergio.utils;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,81 +22,79 @@ public final class FileManager {
 	
 	private FileManager() {}
 	
-	public static Serializable readObject(Path file) throws IOException, ClassNotFoundException {
-		try(ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file.toFile()))) {
-			Serializable imported = (Serializable) inputStream.readObject();
-			return imported;
+	public static Object readObject(File file) throws IOException, ClassNotFoundException {
+		try(ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+			return inputStream.readObject();
 		}
 	}
 
-	public static <T> T readObject(Path file, Class<T> clazz) throws IOException, ClassNotFoundException {
+	public static <T> T readObject(File file, Class<T> clazz) throws IOException, ClassNotFoundException {
 		return clazz.cast(readObject(file));
 	}
 	
-	public static void writeObject(Path file, Serializable serializable) throws IOException {
-		createFile(file);
-		try(ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file.toFile()))) {
+	public static void writeObject(File file, Serializable serializable) throws IOException {
+		createFile(file.toPath());
+		try(ObjectOutputStream outputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
 			outputStream.writeObject(serializable);
-			outputStream.flush();
 		}
 	}
 	
-	public static void writeText(Path file, String text) throws IOException {
+	public static void writeText(File file, String text) throws IOException {
 		writeText(file, text, false, false);
 	}
 	
-	public static void appendText(Path file, String text) throws IOException {
+	public static void appendText(File file, String text) throws IOException {
 		appendText(file, text, false);
 	}
 	
-	public static void appendText(Path file, String text, boolean skipLine) throws IOException {
+	public static void appendText(File file, String text, boolean skipLine) throws IOException {
 		writeText(file, text, skipLine, true);
 	}
 	
-	private static void writeText(Path file, String text, boolean skipLine, boolean append) throws IOException {
-		createFile(file);
-		Files.writeString(file, (skipLine ? "\n" : "") + text, StandardOpenOption.CREATE, 
+	private static void writeText(File file, String text, boolean skipLine, boolean append) throws IOException {
+		createFile(file.toPath());
+		Files.writeString(file.toPath(), (skipLine ? "\n" : "") + text, StandardOpenOption.CREATE, 
 			StandardOpenOption.WRITE, append ? StandardOpenOption.APPEND : 
 			StandardOpenOption.TRUNCATE_EXISTING);
 	}
 	
-	public static void writeLines(Path file, List<String> lines) throws IOException {
-		writeText(file, Utils.toTextLines(lines));
+	public static void writeLines(File file, List<String> lines) throws IOException {
+		writeText(file, StringUtils.toTextLines(lines));
 	}
 	
-	public static void appendLines(Path file, List<String> lines) throws IOException {
-		appendText(file, Utils.toTextLines(lines), true);
+	public static void appendLines(File file, List<String> lines) throws IOException {
+		appendText(file, StringUtils.toTextLines(lines), true);
 	}
 	
-	public static String readLine(Path file, int index) throws IOException {
+	public static String readLine(File file, int index) throws IOException {
 		return readLines(file).get(index);
 	}
 	
-	public static List<String> readLines(Path file) throws IOException {
-		return Files.readAllLines(file);
+	public static List<String> readLines(File file) throws IOException {
+		return Files.readAllLines(file.toPath());
 	}
 	
-	public static String readText(Path file) throws IOException {
-		return Files.readString(file);
+	public static String readText(File file) throws IOException {
+		return Files.readString(file.toPath());
 	}
 	
-	public static void setLine(Path file, int index, String newLine) throws IOException {
+	public static void setLine(File file, int index, String newLine) throws IOException {
 		List<String> lines = readLines(file);
 		lines.set(index, newLine == null ? "" : newLine);
 		writeLines(file, lines);
 	}
 	
-	public static void removeLine(Path file, int index) throws IOException {
+	public static void removeLine(File file, int index) throws IOException {
 		List<String> lines = readLines(file);
 		lines.remove(index);
-		writeText(file, Utils.toTextLines(lines));
+		writeText(file, StringUtils.toTextLines(lines));
 	}
 	
-	public static int indexOf(Path file, String line) throws IOException {
+	public static int indexOf(File file, String line) throws IOException {
 		return readLines(file).indexOf(line);
 	}
 	
-	public static int lastIndexOf(Path file, String line) throws IOException {
+	public static int lastIndexOf(File file, String line) throws IOException {
 		return readLines(file).lastIndexOf(line);
 	}
 	
