@@ -14,10 +14,6 @@ public class MutableVector extends Vector {
 		super(x, y, z);
 	}
 	
-	public MutableVector(Vector copy) {
-		super(copy);
-	}
-	
 	public MutableVector(Point p) {
 		super(p);
 	}
@@ -27,7 +23,7 @@ public class MutableVector extends Vector {
 	}
 	
 	@Override
-	public Vector add(Vector v) {
+	public MutableVector add(Vector v) {
 		x += v.x;
 		y += v.y;
 		z += v.z;
@@ -35,7 +31,7 @@ public class MutableVector extends Vector {
 	}
 	
 	@Override
-	public Vector subtract(Vector v) {
+	public MutableVector subtract(Vector v) {
 		x -= v.x;
 		y -= v.y;
 		z -= v.z;
@@ -43,7 +39,7 @@ public class MutableVector extends Vector {
 	}
 	
 	@Override
-	public Vector multiplyByScalar(double scalar) {
+	public MutableVector multiplyByScalar(double scalar) {
 		x *= scalar;
 		y *= scalar;
 		z *= scalar;
@@ -51,7 +47,7 @@ public class MutableVector extends Vector {
 	}
 	
 	@Override
-	public Vector crossProduct(Vector v) {
+	public MutableVector crossProduct(Vector v) {
 		double i = y * v.z - v.y * z;
 		double j = v.x * z - x * v.z;
 		double k = x * v.y - v.x * y;

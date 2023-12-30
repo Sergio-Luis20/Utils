@@ -6,6 +6,7 @@ import java.util.Objects;
 public class Vector implements Serializable, Cloneable {
 	
 	public static final Vector NULL = new Vector();
+
 	protected double magnitude;
 	protected double x, y, z;
 	protected Point origin, end;
@@ -20,10 +21,6 @@ public class Vector implements Serializable, Cloneable {
 	
 	public Vector(double x, double y, double z) {
 		this(Point.ORIGIN, new Point(x, y, z));
-	}
-	
-	public Vector(Vector copy) {
-		this(copy.toPoint());
 	}
 	
 	public Vector(Point p) {
@@ -41,7 +38,8 @@ public class Vector implements Serializable, Cloneable {
 	}
 	
 	public static Vector trigonometric(double magnitude, double angle) {
-		return new Vector(MathUtils.abs(magnitude) * MathUtils.cos(angle), MathUtils.abs(magnitude) * MathUtils.sin(angle));
+		double magAbs = MathUtils.abs(magnitude);
+		return new Vector(magAbs * MathUtils.cos(angle), magAbs * MathUtils.sin(angle));
 	}
 	
 	public static Vector fromLineMatrix(Matrix matrix) {

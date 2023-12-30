@@ -5,8 +5,8 @@ import java.util.Objects;
 
 public class Point implements Serializable, Cloneable {
 	
-	public static final Point ORIGIN;
-	private double x, y, z;
+	public static final Point ORIGIN = new Point(0, 0, 0);
+	protected double x, y, z;
 	
 	public Point(double x, double y) {
 		this(x, y, 0);
@@ -16,10 +16,6 @@ public class Point implements Serializable, Cloneable {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-	}
-	
-	public Point(Point copy) {
-		this(copy.x, copy.y, copy.z);
 	}
 	
 	public Point add(Point p) {
@@ -130,10 +126,6 @@ public class Point implements Serializable, Cloneable {
 			return;
 		}
 		this.z = z;
-	}
-	
-	static {
-		ORIGIN = new Point(0, 0, 0);
 	}
 	
 }

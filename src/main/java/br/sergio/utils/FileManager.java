@@ -137,7 +137,8 @@ public final class FileManager {
 	
 	public static void copyFileToDirectory(Path sourceFile, Path targetDirectory, boolean replaceIfExists) throws IOException {
 		Files.createDirectories(targetDirectory);
-		Files.copy(sourceFile, targetDirectory.resolve(sourceFile.getFileName()), StandardCopyOption.values());
+		StandardCopyOption[] options = replaceIfExists ? StandardCopyOption.values() : new StandardCopyOption[] {StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.COPY_ATTRIBUTES};
+		Files.copy(sourceFile, targetDirectory.resolve(sourceFile.getFileName()), options);
 	}
 	
 	public static void moveDirectory(Path source, Path target, boolean replaceIfExists) throws IOException {
