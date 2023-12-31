@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,10 +31,10 @@ public final class FileManager {
 		return clazz.cast(readObject(file));
 	}
 	
-	public static void writeObject(File file, Serializable serializable) throws IOException {
+	public static void writeObject(File file, Object obj) throws IOException {
 		createFile(file.toPath());
 		try(ObjectOutputStream outputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
-			outputStream.writeObject(serializable);
+			outputStream.writeObject(obj);
 		}
 	}
 	
