@@ -294,6 +294,10 @@ public class Vector implements Serializable, Cloneable {
 	public double getX() {
 		return x;
 	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
 	
 	public Vector getXComponent() {
 		return new Vector(x, 0, 0);
@@ -302,6 +306,10 @@ public class Vector implements Serializable, Cloneable {
 	public double getY() {
 		return y;
 	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
 	
 	public Vector getYComponent() {
 		return new Vector(0, y, 0);
@@ -309,6 +317,10 @@ public class Vector implements Serializable, Cloneable {
 	
 	public double getZ() {
 		return z;
+	}
+
+	public void setZ(double z) {
+		this.z = z;
 	}
 	
 	public Vector getZComponent() {
