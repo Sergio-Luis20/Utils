@@ -21,4 +21,3 @@ br\sergio\utils\ArrayConverter.class
 br\sergio\utils\FileManager$3.class
 br\sergio\utils\math\IntVector.class
 br\sergio\utils\math\Complex.class
-br\sergio\utils\math\MutableVector.class

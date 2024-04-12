@@ -16,6 +16,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
+import java.util.stream.Stream;
 
 public final class FileManager {
 	
@@ -184,7 +185,10 @@ public final class FileManager {
 	}
 
 	public static boolean isEmpty(Path dir) throws IOException {
-		return Files.list(dir).toArray().length == 0;
+		Stream<Path> paths = Files.list(dir);
+		boolean result = paths.toArray().length == 0;
+		paths.close();
+		return result;
 	}
 	
 	public static void delete(Path path) throws IOException {

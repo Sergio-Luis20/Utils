@@ -2,17 +2,14 @@ package br.sergio.utils.math;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class IntVector implements Serializable, Cloneable {
     
-    public static final IntVector NULL = new IntVector(0, 0, 0);
-
-    protected double magnitude;
     protected int x, y, z;
-    protected IntPoint origin, end;
     
     public IntVector() {
-		this(IntPoint.ORIGIN, IntPoint.ORIGIN);
+		this(0, 0, 0);
 	}
 	
 	public IntVector(int x, int y) {
@@ -20,29 +17,104 @@ public class IntVector implements Serializable, Cloneable {
 	}
 	
 	public IntVector(int x, int y, int z) {
-		this(IntPoint.ORIGIN, new IntPoint(x, y, z));
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 	
 	public IntVector(IntPoint p) {
-		this(IntPoint.ORIGIN, p);
+		this(p.getX(), p.getY(), p.getZ());
 	}
 	
 	public IntVector(IntPoint origin, IntPoint end) {
-		this.origin = origin.clone();
-		this.end = end.clone();
 		IntPoint difference = end.subtract(origin);
 		x = difference.getX();
 		y = difference.getY();
 		z = difference.getZ();
-		magnitude = Math.sqrt(x * x + y * y + z * z);
+	}
+
+	public Matrix toLineMatrix() {
+		return Matrix.lineMatrix(new double[] {x, y, z});
+	}
+	
+	public Matrix toColumnMatrix() {
+		return Matrix.columnMatrix(new double[] {x, y, z});
 	}
 
     public IntVector add(IntVector v) {
 		return new IntVector(x + v.x, y + v.y, z + v.z);
 	}
+
+	public IntVector addSet(IntVector v) {
+		x += v.x;
+		y += v.y;
+		z += v.z;
+		return this;
+	}
+
+	public IntVector addX(int x) {
+		return new IntVector(this.x + x, y, z);
+	}
+
+	public IntVector addXSet(int x) {
+		this.x += x;
+		return this;
+	}
+
+	public IntVector addY(int y) {
+		return new IntVector(x, this.y + y, z);
+	}
+
+	public IntVector addYSet(int y) {
+		this.y += y;
+		return this;
+	}
+
+	public IntVector addZ(int z) {
+		return new IntVector(x, y, this.z + z);
+	}
+
+	public IntVector addZSet(int z) {
+		this.z += z;
+		return this;
+	}
 	
 	public IntVector subtract(IntVector v) {
 		return new IntVector(x - v.x, y - v.y, z - v.z);
+	}
+
+	public IntVector subtractSet(IntVector v) {
+		x -= v.x;
+		y -= v.y;
+		z -= v.z;
+		return this;
+	}
+
+	public IntVector subtractX(int x) {
+		return new IntVector(this.x - x, y, z);
+	}
+
+	public IntVector subtractXSet(int x) {
+		this.x -= x;
+		return this;
+	}
+
+	public IntVector subtractY(int y) {
+		return new IntVector(x, this.y - y, z);
+	}
+
+	public IntVector subtractYSet(int y) {
+		this.y -= y;
+		return this;
+	}
+
+	public IntVector subtractZ(int z) {
+		return new IntVector(x, y, this.z - z);
+	}
+
+	public IntVector subtractZSet(int z) {
+		this.z -= z;
+		return this;
 	}
 	
 	public IntVector multiplyByScalar(int scalar) {
@@ -50,6 +122,17 @@ public class IntVector implements Serializable, Cloneable {
 		int y = this.y * scalar;
 		int z = this.z * scalar;
 		return new IntVector(x, y, z);
+	}
+
+	public IntVector multiplyByScalarSet(int scalar) {
+		x *= scalar;
+		y *= scalar;
+		z *= scalar;
+		return this;
+	}
+
+	public IntVector reverseDirection() {
+		return multiplyByScalar(-1);
 	}
 	
 	public int dotProduct(IntVector v) {
@@ -65,9 +148,9 @@ public class IntVector implements Serializable, Cloneable {
 	
 	public IntVector projection(IntVector v) {
 		if(v.isNull()) {
-			return NULL;
+			return newNull();
 		} else {
-            double doubleRatio = (double) dotProduct(v) / v.dotProduct(v);
+            double doubleRatio = (double) dotProduct(v) / v.magnitudeSquared();
 			return v.multiplyByScalar((int) Math.round(doubleRatio));
 		}
 	}
@@ -77,62 +160,110 @@ public class IntVector implements Serializable, Cloneable {
 	}
 	
 	public boolean isMultipleOf(IntVector v) {
-		return crossProduct(v).equals(NULL);
+		return crossProduct(v).isNull();
 	}
 	
 	public double angle(IntVector v) {
-		if(equals(NULL) || v.equals(NULL)) {
+		if(isNull() || v.isNull()) {
 			return Math.PI / 2;
 		} else {
-			return MathUtils.acos(dotProduct(v) / (magnitude * v.magnitude));
+			return MathUtils.acos(dotProduct(v) / (magnitude() * v.magnitude()));
 		}
 	}
 	
 	public boolean isNull() {
-		return equals(NULL);
+		return x == 0 && y == 0 && z == 0;
 	}
 	
 	public static double mixedProduct(IntVector u, IntVector v, IntVector w) {
 		return u.dotProduct(v.crossProduct(w));
 	}
 
+	public static IntVector newNull() {
+		return new IntVector();
+	}
+
+	public static IntVector sum(IntVector... vectors) {
+		IntVector result = newNull();
+		for(IntVector v : vectors) {
+			result.addSet(v);
+		}
+		return result;
+	}
+
+	public static IntVector sum(Iterable<? extends IntVector> iterable) {
+		IntVector result = newNull();
+		for(IntVector v : iterable) {
+			result.addSet(v);
+		}
+		return result;
+	}
+
+	public int[] getXArray(IntVector... vectors) {
+		return getCoordinateArray(IntVector::getX, vectors);
+	}
+
+	public int[] getYArray(IntVector... vectors) {
+		return getCoordinateArray(IntVector::getY, vectors);
+	}
+
+	public int[] getZArray(IntVector... vectors) {
+		return getCoordinateArray(IntVector::getZ, vectors);
+	}
+	
+	private int[] getCoordinateArray(Function<IntVector, Integer> toCoord, IntVector... vectors) {
+		int[] array = new int[vectors.length];
+		for(int i = 0; i < array.length; i++) {
+			array[i] = toCoord.apply(vectors[i]);
+		}
+		return array;
+	}
+
+	public IntVector newXVersor() {
+		return new IntVector(1, 0, 0);
+	}
+
+	public IntVector newYVersor() {
+		return new IntVector(0, 1, 0);
+	}
+
+	public IntVector newZVersor() {
+		return new IntVector(0, 0, 1);
+	}
+
     public IntPoint toIntPoint() {
         return new IntPoint(x, y, z);
     }
-
-    public IntPoint getOrigin() {
-		return origin;
-	}
 	
-	public IntPoint getEnd() {
-		return end;
-	}
-	
-	public double getMagnitude() {
-		return magnitude;
+	public double magnitude() {
+		return Math.sqrt(x * x + y * y + z * z);
 	}
 
-    public double getX() {
+	public double magnitudeSquared() {
+		return dotProduct(this);
+	}
+
+    public int getX() {
 		return x;
 	}
 	
-	public IntVector getI() {
+	public IntVector getXComponent() {
 		return new IntVector(x, 0, 0);
 	}
 	
-	public double getY() {
+	public int getY() {
 		return y;
 	}
 	
-	public IntVector getJ() {
+	public IntVector getYComponent() {
 		return new IntVector(0, y, 0);
 	}
 	
-	public double getZ() {
+	public int getZ() {
 		return z;
 	}
 	
-	public IntVector getK() {
+	public IntVector getZComponent() {
 		return new IntVector(0, 0, z);
 	}
 
@@ -166,6 +297,10 @@ public class IntVector implements Serializable, Cloneable {
 		String j = (y >= 0 ? "+" : "") + y + "j";
 		String k = (z >= 0 ? "+" : "") + z + "k";
 		return i + j + k;
+	}
+
+	public String toCoordinateString() {
+		return "(" + x + ", " + y + ", " + z + ")";
 	}
 
 }

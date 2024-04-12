@@ -14,12 +14,31 @@ public final class MathUtils {
 	
 	public static final double PI = Math.PI;
 	public static final double E = Math.E;
-	
+
+	// inverse square root interations
+	private static final int INV_SQRT_IT = 5;
+
 	private MathUtils() {}
 	
-	public static double sqrt(double positiveReal) {
-		MathException.lessThanZero(positiveReal, "number");
-		return Math.sqrt(positiveReal);
+	public static double sqrt(double x) {
+		if(x < 0) {
+			throw new MathException("x < 0");
+		}
+		return Math.sqrt(x);
+	}
+
+	public static double inverseSqrt(double x) {
+		if(x <= 0) {
+			throw new MathException("x <= 0");
+		}
+		double xhalf = 0.5 * x;
+		long i = Double.doubleToLongBits(x);
+		i = 0x5fe6ec85e7de30daL - (i >> 1);
+		x = Double.longBitsToDouble(i);
+		for(int it = 0; it < INV_SQRT_IT; it++) {
+			x *= (1.5 - xhalf * x * x);
+		}
+		return x;
 	}
 	
 	public static double cbrt(double real) {

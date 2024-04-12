@@ -2,17 +2,15 @@ package br.sergio.utils.math;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class Vector implements Serializable, Cloneable {
 	
-	public static final Vector NULL = new Vector();
-
-	protected double magnitude;
 	protected double x, y, z;
-	protected Point origin, end;
 	
+	// Null vector constructor
 	public Vector() {
-		this(Point.ORIGIN, Point.ORIGIN);
+		this(0, 0, 0);
 	}
 	
 	public Vector(double x, double y) {
@@ -20,26 +18,25 @@ public class Vector implements Serializable, Cloneable {
 	}
 	
 	public Vector(double x, double y, double z) {
-		this(Point.ORIGIN, new Point(x, y, z));
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 	
 	public Vector(Point p) {
-		this(Point.ORIGIN, p);
+		this(p.getX(), p.getY(), p.getZ());
 	}
 	
 	public Vector(Point origin, Point end) {
-		this.origin = origin.clone();
-		this.end = end.clone();
 		Point difference = end.subtract(origin);
 		x = difference.getX();
 		y = difference.getY();
 		z = difference.getZ();
-		magnitude = Math.sqrt(x * x + y * y + z * z);
 	}
 	
 	public static Vector trigonometric(double magnitude, double angle) {
-		double magAbs = MathUtils.abs(magnitude);
-		return new Vector(magAbs * MathUtils.cos(angle), magAbs * MathUtils.sin(angle));
+		double magAbs = Math.abs(magnitude);
+		return new Vector(magAbs * Math.cos(angle), magAbs * Math.sin(angle));
 	}
 	
 	public static Vector fromLineMatrix(Matrix matrix) {
@@ -50,7 +47,7 @@ public class Vector implements Serializable, Cloneable {
 	}
 	
 	public static Vector fromColumnMatrix(Matrix matrix) {
-		if(!matrix.isColumn() && matrix.getLineAmount() != 3) {
+		if(!matrix.isColumn() || matrix.getLineAmount() != 3) {
 			throw new MathException("invalid matrix");
 		}
 		return new Vector(matrix.getValue(0, 0), matrix.getValue(1, 0), matrix.getValue(2, 0));
@@ -67,9 +64,77 @@ public class Vector implements Serializable, Cloneable {
 	public Vector add(Vector v) {
 		return new Vector(x + v.x, y + v.y, z + v.z);
 	}
+
+	public Vector addSet(Vector v) {
+		x += v.x;
+		y += v.y;
+		z += v.z;
+		return this;
+	}
+
+	public Vector addX(double x) {
+		return new Vector(this.x + x, y, z);
+	}
+
+	public Vector addXSet(double x) {
+		this.x += x;
+		return this;
+	}
+
+	public Vector addY(double y) {
+		return new Vector(x, this.y + y, z);
+	}
+
+	public Vector addYSet(double y) {
+		this.y += y;
+		return this;
+	}
+
+	public Vector addZ(double z) {
+		return new Vector(x, y, this.z + z);
+	}
+
+	public Vector addZSet(double z) {
+		this.z += z;
+		return this;
+	}
 	
 	public Vector subtract(Vector v) {
 		return new Vector(x - v.x, y - v.y, z - v.z);
+	}
+
+	public Vector subtractSet(Vector v) {
+		x -= v.x;
+		y -= v.y;
+		z -= v.z;
+		return this;
+	}
+
+	public Vector subtractX(double x) {
+		return new Vector(this.x - x, y, z);
+	}
+
+	public Vector subtractXSet(double x) {
+		this.x -= x;
+		return this;
+	}
+
+	public Vector subtractY(double y) {
+		return new Vector(x, this.y - y, z);
+	}
+
+	public Vector subtractYSet(double y) {
+		this.y -= y;
+		return this;
+	}
+
+	public Vector subtractZ(double z) {
+		return new Vector(x, y, this.z - z);
+	}
+
+	public Vector subtractZSet(double z) {
+		this.z -= z;
+		return this;
 	}
 	
 	public Vector multiplyByScalar(double scalar) {
@@ -77,6 +142,17 @@ public class Vector implements Serializable, Cloneable {
 		double y = this.y * scalar;
 		double z = this.z * scalar;
 		return new Vector(x, y, z);
+	}
+
+	public Vector multiplyByScalarSet(double scalar) {
+		x *= scalar;
+		y *= scalar;
+		z *= scalar;
+		return this;
+	}
+
+	public Vector reverseDirection() {
+		return multiplyByScalar(-1);
 	}
 	
 	public double dotProduct(Vector v) {
@@ -92,9 +168,9 @@ public class Vector implements Serializable, Cloneable {
 	
 	public Vector projection(Vector v) {
 		if(v.isNull()) {
-			return NULL;
+			return newNull();
 		} else {
-			return v.multiplyByScalar(dotProduct(v) / v.dotProduct(v));
+			return v.multiplyByScalar(dotProduct(v) / v.magnitudeSquared());
 		}
 	}
 
@@ -103,60 +179,108 @@ public class Vector implements Serializable, Cloneable {
 	}
 	
 	public boolean isMultipleOf(Vector v) {
-		return crossProduct(v).equals(NULL);
+		return crossProduct(v).isNull();
 	}
 	
 	public Vector versor() {
-		if(equals(NULL)) {
+		if(isNull()) {
 			throw new MathException("the null vector doesn't have a versor");
 		}
-		return multiplyByScalar(1 / magnitude);
+		return multiplyByScalar(MathUtils.inverseSqrt(magnitudeSquared()));
 	}
-	
+
 	public Vector toNewMagnitude(double scalar) {
-		if(equals(NULL)) {
+		if(isNull()) {
 			throw new MathException("the null vector cannot generate a new magnitude");
 		}
-		return multiplyByScalar(MathUtils.abs(scalar) / magnitude);
+		return versor().multiplyByScalarSet(scalar);
 	}
 	
 	public double angle(Vector v) {
-		if(equals(NULL) || v.equals(NULL)) {
+		if(isNull() || v.isNull()) {
 			return Math.PI / 2;
 		} else {
-			return MathUtils.acos(dotProduct(v) / (magnitude * v.magnitude));
+			return Math.acos(dotProduct(v) / (magnitude() * v.magnitude()));
 		}
 	}
 	
 	public boolean isNull() {
-		return equals(NULL);
+		return x == 0 && y == 0 && z == 0;
 	}
 	
 	public static double mixedProduct(Vector u, Vector v, Vector w) {
 		return u.dotProduct(v.crossProduct(w));
+	}
+
+	public static Vector newNull() {
+		return new Vector();
+	}
+
+	public static Vector sum(Vector... vectors) {
+		Vector result = newNull();
+		for(Vector v : vectors) {
+			result.addSet(v);
+		}
+		return result;
+	}
+
+	public static Vector sum(Iterable<? extends Vector> iterable) {
+		Vector result = newNull();
+		for(Vector v : iterable) {
+			result.addSet(v);
+		}
+		return result;
+	}
+
+	public double[] getXArray(Vector... vectors) {
+		return getCoordinateArray(Vector::getX, vectors);
+	}
+
+	public double[] getYArray(Vector... vectors) {
+		return getCoordinateArray(Vector::getY, vectors);
+	}
+
+	public double[] getZArray(Vector... vectors) {
+		return getCoordinateArray(Vector::getZ, vectors);
+	}
+	
+	private double[] getCoordinateArray(Function<Vector, Double> toCoord, Vector... vectors) {
+		double[] array = new double[vectors.length];
+		for(int i = 0; i < array.length; i++) {
+			array[i] = toCoord.apply(vectors[i]);
+		}
+		return array;
+	}
+
+	public Vector newXVersor() {
+		return new Vector(1, 0, 0);
+	}
+
+	public Vector newYVersor() {
+		return new Vector(0, 1, 0);
+	}
+
+	public Vector newZVersor() {
+		return new Vector(0, 0, 1);
 	}
 	
 	public Point toPoint() {
 		return new Point(x, y, z);
 	}
 	
-	public Point getOrigin() {
-		return origin;
+	public double magnitude() {
+		return Math.sqrt(x * x + y * y + z * z);
 	}
-	
-	public Point getEnd() {
-		return end;
-	}
-	
-	public double getMagnitude() {
-		return magnitude;
+
+	public double magnitudeSquared() {
+		return dotProduct(this);
 	}
 	
 	public double getX() {
 		return x;
 	}
 	
-	public Vector getI() {
+	public Vector getXComponent() {
 		return new Vector(x, 0, 0);
 	}
 	
@@ -164,7 +288,7 @@ public class Vector implements Serializable, Cloneable {
 		return y;
 	}
 	
-	public Vector getJ() {
+	public Vector getYComponent() {
 		return new Vector(0, y, 0);
 	}
 	
@@ -172,13 +296,13 @@ public class Vector implements Serializable, Cloneable {
 		return z;
 	}
 	
-	public Vector getK() {
+	public Vector getZComponent() {
 		return new Vector(0, 0, z);
 	}
-	
+
 	@Override
 	public Vector clone() {
-		return new Vector(origin, end);
+		return new Vector(x, y, z);
 	}
 	
 	@Override
@@ -206,6 +330,10 @@ public class Vector implements Serializable, Cloneable {
 		String j = (y >= 0 ? "+" : "") + y + "j";
 		String k = (z >= 0 ? "+" : "") + z + "k";
 		return i + j + k;
+	}
+
+	public String toCoordinateString() {
+		return "(" + x + ", " + y + ", " + z + ")";
 	}
 	
 }

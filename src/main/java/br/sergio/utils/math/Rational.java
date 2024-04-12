@@ -44,9 +44,21 @@ public final class Rational extends Number implements Cloneable, Comparable<Rati
 	public Rational divide(Rational rational) {
 		return multiply(rational.getInverse());
 	}
+
+	public boolean isZero() {
+		return num == 0;
+	}
 	
 	public boolean isInteger() {
 		return denom == 1;
+	}
+
+	public boolean isNatural() {
+		return isInteger() && num >= 0;
+	}
+
+	public boolean isNonNullNatural() {
+		return isNatural() && num != 0;
 	}
 	
 	public static int[] getNumerators(Rational[] array) {
@@ -63,6 +75,30 @@ public final class Rational extends Number implements Cloneable, Comparable<Rati
 			denominators[i] = array[i].denom;
 		}
 		return denominators;
+	}
+
+	public static Rational newZero() {
+		return new Rational(0);
+	}
+
+	public static Rational newOne() {
+		return new Rational(1);
+	}
+
+	public static Rational sum(Rational... rationals) {
+		Rational result = newZero();
+		for(Rational r : rationals) {
+			result = result.add(r);
+		}
+		return result;
+	}
+
+	public static Rational sum(Iterable<Rational> iterable) {
+		Rational result = newZero();
+		for(Rational r : iterable) {
+			result = result.add(r);
+		}
+		return result;
 	}
 	
 	@Override
@@ -120,8 +156,8 @@ public final class Rational extends Number implements Cloneable, Comparable<Rati
 				return new Rational(1);
 			}
 		}
-		int newNum = (int) MathUtils.pow(n, k);
-		int newDenom = (int) MathUtils.pow(d, k);
+		int newNum = (int) Math.pow(n, k);
+		int newDenom = (int) Math.pow(d, k);
 		return new Rational(newNum, newDenom);
 	}
 	
