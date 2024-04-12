@@ -199,19 +199,19 @@ public class IntVector implements Serializable, Cloneable {
 		return result;
 	}
 
-	public int[] getXArray(IntVector... vectors) {
+	public static int[] getXArray(IntVector... vectors) {
 		return getCoordinateArray(IntVector::getX, vectors);
 	}
 
-	public int[] getYArray(IntVector... vectors) {
+	public static int[] getYArray(IntVector... vectors) {
 		return getCoordinateArray(IntVector::getY, vectors);
 	}
 
-	public int[] getZArray(IntVector... vectors) {
+	public static int[] getZArray(IntVector... vectors) {
 		return getCoordinateArray(IntVector::getZ, vectors);
 	}
 	
-	private int[] getCoordinateArray(Function<IntVector, Integer> toCoord, IntVector... vectors) {
+	private static int[] getCoordinateArray(Function<IntVector, Integer> toCoord, IntVector... vectors) {
 		int[] array = new int[vectors.length];
 		for(int i = 0; i < array.length; i++) {
 			array[i] = toCoord.apply(vectors[i]);
@@ -219,15 +219,15 @@ public class IntVector implements Serializable, Cloneable {
 		return array;
 	}
 
-	public IntVector newXVersor() {
+	public static IntVector newXVersor() {
 		return new IntVector(1, 0, 0);
 	}
 
-	public IntVector newYVersor() {
+	public static IntVector newYVersor() {
 		return new IntVector(0, 1, 0);
 	}
 
-	public IntVector newZVersor() {
+	public static IntVector newZVersor() {
 		return new IntVector(0, 0, 1);
 	}
 

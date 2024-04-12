@@ -186,14 +186,29 @@ public class Vector implements Serializable, Cloneable {
 		if(isNull()) {
 			throw new MathException("the null vector doesn't have a versor");
 		}
+		return multiplyByScalar(1 / magnitude());
+	}
+
+	// uses fast inverse sqrt algorithm, which is faster but has less precision
+	public Vector fastVersor() {
+		if(isNull()) {
+			throw new MathException("the null vector doesn't have a versor");
+		}
 		return multiplyByScalar(MathUtils.inverseSqrt(magnitudeSquared()));
 	}
 
-	public Vector toNewMagnitude(double scalar) {
+	public Vector newMagnitude(double scalar) {
 		if(isNull()) {
 			throw new MathException("the null vector cannot generate a new magnitude");
 		}
 		return versor().multiplyByScalarSet(scalar);
+	}
+
+	public Vector fastNewMagnitude(double scalar) {
+		if(isNull()) {
+			throw new MathException("the null vector cannot generate a new magnitude");
+		}
+		return fastVersor().multiplyByScalarSet(scalar);
 	}
 	
 	public double angle(Vector v) {
@@ -232,19 +247,19 @@ public class Vector implements Serializable, Cloneable {
 		return result;
 	}
 
-	public double[] getXArray(Vector... vectors) {
+	public static double[] getXArray(Vector... vectors) {
 		return getCoordinateArray(Vector::getX, vectors);
 	}
 
-	public double[] getYArray(Vector... vectors) {
+	public static double[] getYArray(Vector... vectors) {
 		return getCoordinateArray(Vector::getY, vectors);
 	}
 
-	public double[] getZArray(Vector... vectors) {
+	public static double[] getZArray(Vector... vectors) {
 		return getCoordinateArray(Vector::getZ, vectors);
 	}
 	
-	private double[] getCoordinateArray(Function<Vector, Double> toCoord, Vector... vectors) {
+	private static double[] getCoordinateArray(Function<Vector, Double> toCoord, Vector... vectors) {
 		double[] array = new double[vectors.length];
 		for(int i = 0; i < array.length; i++) {
 			array[i] = toCoord.apply(vectors[i]);
@@ -252,15 +267,15 @@ public class Vector implements Serializable, Cloneable {
 		return array;
 	}
 
-	public Vector newXVersor() {
+	public static Vector newXVersor() {
 		return new Vector(1, 0, 0);
 	}
 
-	public Vector newYVersor() {
+	public static Vector newYVersor() {
 		return new Vector(0, 1, 0);
 	}
 
-	public Vector newZVersor() {
+	public static Vector newZVersor() {
 		return new Vector(0, 0, 1);
 	}
 	
