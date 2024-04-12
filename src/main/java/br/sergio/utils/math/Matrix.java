@@ -2,7 +2,6 @@ package br.sergio.utils.math;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.function.Function;
 
 public class Matrix implements Serializable, Cloneable {
 	
@@ -72,18 +71,18 @@ public class Matrix implements Serializable, Cloneable {
 		return columns;
 	}
 	
-	public Matrix getLine(int line) {
+	public double[] getLine(int line) {
 		if(line < 0 || line >= lines) {
 			throw new IndexOutOfBoundsException(line);
 		}
-		double[] lineArray = new double[columns];
-		for(int i = 0; i < columns; i++) {
-			lineArray[i] = data[line][i];
-		}
-		return lineMatrix(lineArray);
+		return data[line].clone();
+	}
+
+	public Matrix getLineAsMatrix(int line) {
+		return lineMatrix(getLine(line));
 	}
 	
-	public Matrix getColumn(int column) {
+	public double[] getColumn(int column) {
 		if(column < 0 || column >= columns) {
 			throw new IndexOutOfBoundsException(column);
 		}
@@ -91,7 +90,11 @@ public class Matrix implements Serializable, Cloneable {
 		for(int i = 0; i < lines; i++) {
 			columnArray[i] = data[i][column];
 		}
-		return columnMatrix(columnArray);
+		return columnArray;
+	}
+	
+	public Matrix getColumnAsMatrix(int column) {
+		return columnMatrix(getColumn(column));
 	}
 	
 	public static Matrix lineMatrix(double... array) {
@@ -99,7 +102,7 @@ public class Matrix implements Serializable, Cloneable {
 			throw new MathException("minimum line size: 1");
 		}
 		double[][] data = new double[1][array.length];
-		data[0] = Arrays.copyOf(array, array.length);
+		data[0] = array.clone();
 		return new Matrix(data);
 	}
 	
@@ -173,19 +176,16 @@ public class Matrix implements Serializable, Cloneable {
 		if(!isSquare()) {
 			throw new MathException("only square matrices have determinants");
 		}
-		return switch(getOrder()) {
-			case 1:
-				yield data[0][0];
-			case 2:
-				yield data[0][0] * data[1][1] - data[0][1] * data[1][0];
-			case 3:
-				yield data[2][0] * data[0][1] * data[1][2] 
+		return switch(order()) {
+			case 1 -> data[0][0];
+			case 2 -> data[0][0] * data[1][1] - data[0][1] * data[1][0];
+			case 3 -> data[2][0] * data[0][1] * data[1][2] 
 						+ data[0][0] * data[1][1] * data[2][2] 
 						+ data[1][0] * data[2][1] * data[0][2]
 						- data[2][2] * data[0][1] * data[1][0]
 						- data[0][2] * data[1][1] * data[2][0]
 						- data[1][2] * data[2][1] * data[0][0];
-			default:
+			default -> {
 				double determinant = 0;
 				for(int i = 0; i < columns; i++) {
 					double value = data[0][i];
@@ -195,6 +195,7 @@ public class Matrix implements Serializable, Cloneable {
 					determinant += value * cofactor(0, i);
 				}
 				yield determinant;
+			}
 		};
 	}
 	
@@ -206,7 +207,7 @@ public class Matrix implements Serializable, Cloneable {
 		if(!isSquare()) {
 			throw new MathException("not a square matrix");
 		}
-		int order = getOrder();
+		int order = order();
 		if(line < 0 || line >= order || column < 0 || column >= order) {
 			throw new IndexOutOfBoundsException("position (" + line + ", " + column + ") out of bounds (" + order + ", " + order + ")");
 		}
@@ -247,14 +248,14 @@ public class Matrix implements Serializable, Cloneable {
 	}
 	
 	public Matrix multiplyByScalar(double scalar) {
-		return new Matrix(Arrays.copyOf(data, data.length)).map(v -> v * scalar);
+		return clone().map((i, j, v) -> v * scalar);
 	}
 	
 	public Matrix pow(int exponent) {
 		if(!isSquare() || exponent < 0) {
 			return null;
 		}
-		Matrix result = getIdentity(getOrder());
+		Matrix result = identity(order());
 		for(int i = 0; i < exponent; i++) {
 			result = result.multiply(this);
 		}
@@ -279,7 +280,7 @@ public class Matrix implements Serializable, Cloneable {
 		return result;
 	}
 	
-	public int getOrder() {
+	public int order() {
 		return isSquare() ? lines : -1;
 	}
 	
@@ -306,7 +307,7 @@ public class Matrix implements Serializable, Cloneable {
 	}
 	
 	public Matrix cofactorMatrix() {
-		int order = getOrder();
+		int order = order();
 		if(!isSquare() || order == 1) {
 			return null;
 		}
@@ -327,7 +328,7 @@ public class Matrix implements Serializable, Cloneable {
 		if(!isSquare() || isNull()) {
 			return null;
 		}
-		if(getOrder() == 1) {
+		if(order() == 1) {
 			return new Matrix(new double[][] {{1 / data[0][0]}});
 		}
 		double determinant = determinant();
@@ -337,17 +338,17 @@ public class Matrix implements Serializable, Cloneable {
 		return adjugate().multiplyByScalar(1 / determinant);
 	}
 	
-	public Matrix map(Function<Double, Double> function) {
+	public Matrix map(DoubleTriFunction function) {
 		Matrix mapped = new Matrix(lines, columns);
 		for(int i = 0; i < lines; i++) {
 			for(int j = 0; j < columns; j++) {
-				mapped.data[i][j] = function.apply(data[i][j]);
+				mapped.data[i][j] = function.apply(i, j, data[i][j]);
 			}
 		}
 		return mapped;
 	}
 	
-	public static Matrix getIdentity(int order) {
+	public static Matrix identity(int order) {
 		Matrix identity = new Matrix(order);
 		for(int i = 0; i < order; i++) {
 			identity.data[i][i] = 1;

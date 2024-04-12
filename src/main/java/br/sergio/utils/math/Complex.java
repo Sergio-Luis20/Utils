@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public final class Complex extends Number implements Cloneable, Comparable<Complex> {
 	
-	public static transient final Complex I = new Complex(0, 1);
+	public static final Complex I = new Complex(0, 1);
 	
 	private final double real;
 	private final double imaginary;
@@ -41,7 +41,7 @@ public final class Complex extends Number implements Cloneable, Comparable<Compl
 	}
 	
 	public Complex divide(Complex c) {
-		double denom = MathUtils.pow(c.real, 2) + MathUtils.pow(c.imaginary, 2);
+		double denom = c.real * c.real + c.imaginary * c.imaginary;
 		if(denom == 0) {
 			throw new MathException("denominator = 0");
 		}
@@ -69,7 +69,7 @@ public final class Complex extends Number implements Cloneable, Comparable<Compl
 		if(exp.isZero()) {
 			return new Complex(1);
 		}
-		double theta = exp.real * base.argument + exp.imaginary * MathUtils.ln(base.modulus);
+		double theta = exp.real * base.argument + exp.imaginary * Math.log(base.modulus);
 		double factor = Math.pow(base.modulus, exp.real) * Math.pow(Math.E, -exp.imaginary * base.argument);
 		double real = Math.cos(theta) * factor;
 		double imaginary = Math.sin(theta) * factor;
@@ -85,7 +85,7 @@ public final class Complex extends Number implements Cloneable, Comparable<Compl
 	}
 
 	public static Complex ln(Complex logarithming) {
-		return new Complex(MathUtils.ln(logarithming.modulus), logarithming.argument);
+		return new Complex(Math.log(logarithming.modulus), logarithming.argument);
 	}
 	
 	@Override
