@@ -3,6 +3,8 @@ package br.sergio.utils.math;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import br.sergio.utils.TriFunction;
+
 public class Matrix implements Serializable, Cloneable {
 	
 	private final int lines;
@@ -338,7 +340,7 @@ public class Matrix implements Serializable, Cloneable {
 		return adjugate().multiplyByScalar(1 / determinant);
 	}
 	
-	public Matrix map(DoubleTriFunction function) {
+	public Matrix map(TriFunction<Integer, Integer, Double, Double> function) {
 		Matrix mapped = new Matrix(lines, columns);
 		for(int i = 0; i < lines; i++) {
 			for(int j = 0; j < columns; j++) {
