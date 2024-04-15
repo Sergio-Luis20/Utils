@@ -9,12 +9,15 @@ br\sergio\utils\TriFunction.class
 br\sergio\utils\math\MathUtils.class
 br\sergio\utils\math\Polynomial.class
 br\sergio\utils\math\IntVector.class
+br\sergio\utils\PairSupplier.class
 br\sergio\utils\math\Complex.class
 br\sergio\utils\StringUtils.class
 br\sergio\utils\Pair.class
 br\sergio\utils\FileManager$2.class
+br\sergio\utils\TriConsumer.class
 br\sergio\utils\math\Point.class
 br\sergio\utils\math\MathException.class
+br\sergio\utils\TriPredicate.class
 br\sergio\utils\math\Matrix.class
 br\sergio\utils\math\VectorialField.class
 br\sergio\utils\FileManager.class
