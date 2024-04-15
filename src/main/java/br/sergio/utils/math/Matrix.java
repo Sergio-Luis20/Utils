@@ -200,7 +200,7 @@ public class Matrix implements Serializable, Cloneable {
 	}
 	
 	public double cofactor(int line, int column) {
-		return MathUtils.pow(-1, line + column) * complementaryMinor(line, column);
+		return ((line + column) % 2 == 0 ? 1 : -1) * complementaryMinor(line, column);
 	}
 	
 	public double complementaryMinor(int line, int column) {
