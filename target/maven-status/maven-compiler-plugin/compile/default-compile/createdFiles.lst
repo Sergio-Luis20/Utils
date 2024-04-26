@@ -5,6 +5,7 @@ br\sergio\utils\ConditionException.class
 br\sergio\utils\math\Rational.class
 br\sergio\utils\math\Vector.class
 br\sergio\utils\math\Line2D.class
+br\sergio\utils\NotNullPair.class
 br\sergio\utils\TriFunction.class
 br\sergio\utils\math\MathUtils.class
 br\sergio\utils\math\Polynomial.class

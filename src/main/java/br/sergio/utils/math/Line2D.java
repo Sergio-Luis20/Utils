@@ -6,8 +6,8 @@ public class Line2D implements Serializable, Cloneable {
     
     private double a, b, c;
 
-    private Point point;
-    private Vector vector;
+    private final Point point;
+    private final Vector vector;
 
     public Line2D(Point p1, Point p2) {
         if(p1 == null || p2 == null) {
@@ -18,7 +18,7 @@ public class Line2D implements Serializable, Cloneable {
         }
         setABC(p1, p2);
         point = new Point(p1.getX(), p1.getY(), p1.getZ());
-        vector = new Vector(a, b).versor();
+        vector = new Vector(a, b).unitVector();
     }
 
     public Line2D(Point point, Vector vector) {
@@ -29,14 +29,14 @@ public class Line2D implements Serializable, Cloneable {
             throw new IllegalArgumentException("NULL vector");
         }
         this.point = point.clone();
-        this.vector = vector.clone().versor();
+        this.vector = vector.clone().unitVector();
         setABC(point, getPoint(1));
     }
 
     private void setABC(Point p1, Point p2) {
-        a = p1.getY() - p2.getY();
-        b = p2.getX() - p1.getX();
-        c = p1.getX() * p2.getY() - p1.getY() * p2.getX();
+        a = p2.getY() - p1.getY();
+        b = p1.getX() - p2.getX();
+        c = p2.getX() * p1.getY() - p1.getX() * p2.getY();
     }
 
     public boolean isHorizontal() {
@@ -56,7 +56,7 @@ public class Line2D implements Serializable, Cloneable {
     }
 
     public boolean isParallel(Line2D line) {
-        return vector.isMultipleOf(line.vector);
+        return determinant(line) == 0;
     }
 
     public boolean isOrthogonal(Line2D line) {
@@ -83,9 +83,15 @@ public class Line2D implements Serializable, Cloneable {
     	}
     }
 
+    public double determinant(Line2D line) {
+        return new Matrix(new double[][] {
+                {a, b},
+                {line.a, line.b}
+        }).determinant();
+    }
+
     public Point getIntersection(Line2D line) {
-        Matrix matrix = new Matrix(new double[][] {{a, b}, {line.a, line.b}});
-        double d = matrix.determinant();
+        double d = determinant(line);
         if(d == 0) {
             return null;
         }
@@ -160,7 +166,7 @@ public class Line2D implements Serializable, Cloneable {
     }
 
     public Vector getVector() {
-        return vector;
+        return vector.clone();
     }
     
     @Override

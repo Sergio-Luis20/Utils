@@ -182,17 +182,17 @@ public class Vector implements Serializable, Cloneable {
 		return crossProduct(v).isNull();
 	}
 	
-	public Vector versor() {
+	public Vector unitVector() {
 		if(isNull()) {
-			throw new MathException("the null vector doesn't have a versor");
+			throw new MathException("the null vector doesn't have a unit vector");
 		}
 		return multiplyByScalar(1 / magnitude());
 	}
 
 	// uses fast inverse sqrt algorithm, which is faster but has less precision
-	public Vector fastVersor() {
+	public Vector fastUnitVector() {
 		if(isNull()) {
-			throw new MathException("the null vector doesn't have a versor");
+			throw new MathException("the null vector doesn't have a unit vector");
 		}
 		return multiplyByScalar(MathUtils.inverseSqrt(magnitudeSquared()));
 	}
@@ -201,14 +201,14 @@ public class Vector implements Serializable, Cloneable {
 		if(isNull()) {
 			throw new MathException("the null vector cannot generate a new magnitude");
 		}
-		return versor().multiplyByScalarSet(scalar);
+		return unitVector().multiplyByScalarSet(scalar);
 	}
 
 	public Vector fastNewMagnitude(double scalar) {
 		if(isNull()) {
 			throw new MathException("the null vector cannot generate a new magnitude");
 		}
-		return fastVersor().multiplyByScalarSet(scalar);
+		return fastUnitVector().multiplyByScalarSet(scalar);
 	}
 	
 	public double angle(Vector v) {

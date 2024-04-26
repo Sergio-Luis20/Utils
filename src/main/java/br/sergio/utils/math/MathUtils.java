@@ -15,9 +15,6 @@ public final class MathUtils {
 	public static final double PI = Math.PI;
 	public static final double E = Math.E;
 
-	// inverse square root interations
-	private static final int INV_SQRT_IT = 5;
-
 	private MathUtils() {}
 	
 	public static double sqrt(double x) {
@@ -35,16 +32,14 @@ public final class MathUtils {
 		long i = Double.doubleToLongBits(x);
 		i = 0x5fe6ec85e7de30daL - (i >> 1);
 		x = Double.longBitsToDouble(i);
-		for(int it = 0; it < INV_SQRT_IT; it++) {
-			x *= (1.5 - xhalf * x * x);
-		}
+		x *= (1.5 - xhalf * x * x);
 		return x;
 	}
 	
 	public static double cbrt(double real) {
 		return Math.cbrt(real);
 	}
-	
+
 	public static double root(double rooting, double index) {
 		if(Double.isNaN(rooting) || Double.isNaN(index)) {
 			return Double.NaN;

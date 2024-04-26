@@ -68,7 +68,11 @@ public class Point implements Serializable, Cloneable {
 	
 	@Override
 	public Point clone() {
-		return new Point(x, y, z);
+		try {
+			return (Point) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new Error(e);
+		}
 	}
 	
 	@Override
