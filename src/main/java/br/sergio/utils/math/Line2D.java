@@ -84,10 +84,7 @@ public class Line2D implements Serializable, Cloneable {
     }
 
     public double determinant(Line2D line) {
-        return new Matrix(new double[][] {
-                {a, b},
-                {line.a, line.b}
-        }).determinant();
+        return a * line.b - b * line.a;
     }
 
     public Point getIntersection(Line2D line) {
@@ -95,9 +92,9 @@ public class Line2D implements Serializable, Cloneable {
         if(d == 0) {
             return null;
         }
-        double dx = new Matrix(new double[][] {{c, b}, {line.c, line.b}}).determinant();
-        double dy = new Matrix(new double[][] {{a, c}, {line.a, line.c}}).determinant();
-        return new Point(dx / d, dy / d);
+        double detX = c * line.b - b * line.c;
+        double detY = a * line.c - c * line.a;
+        return new Point(detX / d, detY / d);
     }
 
     public double distance(Line2D line) {
