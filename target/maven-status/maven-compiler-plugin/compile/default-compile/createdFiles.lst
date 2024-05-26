@@ -27,3 +27,4 @@ br\sergio\utils\math\IntPoint.class
 br\sergio\utils\ArrayConverter.class
 br\sergio\utils\FileManager$3.class
 br\sergio\utils\math\IntTriFunction.class
+br\sergio\utils\Resource.class
